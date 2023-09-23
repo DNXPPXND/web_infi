@@ -1,15 +1,15 @@
 import React from "react";
-import Navbar from "../components/Navbar_pages.jsx";
-import Footer_page from "../components/Footer_page";
-import Vedio from "../components/Vedio.jsx";
+import Navbar from "../components/navbar/Navbar_pages.jsx";
+import Footer_page from "../components/footer/Footer_page.jsx";
+import Vedio from "../components/vdo/Vedio.jsx";
 import skill from "../assets/skill.png";
-import Course_more_page from "../components/Course_more_page.jsx";
-import Tablevideo from '../assets/Tablevideo.png';
-import atom from '../assets/atom.png';
+import Table_online from "../components/Table_online.jsx";
+import Tablevideo from "../assets/Tablevideo.png";
+import atom from "../assets/teacher.png";
+import YouTubeVideo from "../components/vdo/Video.jsx";
 
 const Online_course = () => {
-
-  const videoUrl ="vedio-pre.mp4";
+  const videoUrl = "vedio-pre.mp4";
 
   return (
     <>
@@ -46,26 +46,25 @@ const Online_course = () => {
           <img src={skill} />
         </div>
       </div>
-      <div className="mt-20 bg-gray-200 ">
-        <Vedio videoUrl={videoUrl} />
+      <div className="mt-20 bg-gray-200 py-5 flex justify-center items-center h-screen">
+        <YouTubeVideo />
       </div>
-      <div className="flex justify-center items-center mt-20">
-        <img src={Tablevideo} />
-      </div>
-      <div className="w-full py-16 text-white px-4 bg-cyan-300 grid grid-cols-1  sm:grid-cols-2 ">
+      <Table_online />
+      <div className="w-full py-5 text-white px-4 bg-cyan-300 grid grid-cols-1  sm:grid-cols-2 ">
         <div>
-          <img src={atom} />
+          <img src={atom} className="" />
         </div>
-        <div className="max-w-[1240px] mx-auto flex flex-col lg:flex-row justify-center items-center">
-          <div className="lg:w-2/3 text-center lg:text-left lg:pr-8">
-            <h1 className="md:text-3xl sm:text-2xl text-1xl py-2">
-            ดร.ก้อง รักสยาม 
-            </h1>
-            <p>
-              มหาวิทยาลัย ยูทูป
-            </p>
-          </div>
-        </div>
+      </div>
+      <div className="mt-4 lg:mt-8 flex justify-center lg:justify-start">
+        <a
+          href="https://forms.gle/XUsRhiid77hwVYJQ7"
+          className="items-center"
+          target="_blank"
+        >
+          <button className="flex btn btn-primary rounded-full font-medium w-[200px] py-3 ">
+            ลงทะเบียนเรียน
+          </button>
+        </a>
       </div>
       <div className="mt-10">
         <Footer_page />

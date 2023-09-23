@@ -6,11 +6,12 @@ const Header_pages = () => {
   return (
     <div
       name="home"
-      className=" bg-white flex flex-col justify-between -mt-0.5"
+      className=" bg-white flex flex-col justify-between -mt-0.5 font-inter"
+      
     >
       <div className="grid md:grid-cols-2 max-w-[1240px] m-auto ">
         <div className="flex flex-col justify-center md:items-start w-full px-2 py-2 items-center">
-          <h1 className="py-6 text-2xl md:text-4xl font-bold">
+          <h1 className="py-6 text-2xl md:text-4xl font-inter font-bold">
             <p className="">คอร์สเรียน</p> <p>เพิ่มทักษะ ซอร์ฟสกิล ฮาร์ดสกิล</p>
           </h1>
           <p className="text-2xl text-gray-500">
@@ -28,7 +29,7 @@ const Header_pages = () => {
           </a>
         </div>
         <div className="hidden md:flex w-full">
-          <img className="w-full" src={logomain} alt="/" />
+          <img className="w-full " src={logomain} alt="/" />
         </div>
       </div>
     </div>

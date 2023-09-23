@@ -1,8 +1,11 @@
 import React from "react";
 
+
 const Newsletter = () => {
+  
+
   return (
-    <div className="w-full py-16 text-white px-4 bg-cyan-300">
+    <div className="w-full py-16 text-white px-4 bg-cyan-300 font-inter">
       <div className="max-w-[1240px] mx-auto flex flex-col lg:flex-row justify-center items-center">
         <div className="lg:w-2/3 text-center lg:text-left lg:pr-8">
           <h1 className="md:text-3xl sm:text-2xl text-1xl font-bold py-2">
