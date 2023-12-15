@@ -72,11 +72,13 @@ const Navbar_profile = () => {
         </li>
         <li>
           <div className="flex mr-3 text-sm bg-cyan-300 rounded-full md:mr-0  p-3">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="pond.png"
-              alt="user photo"
-            />
+            <a href="/users-profile">
+              <img
+                className="w-8 h-8 rounded-full"
+                src="https://user-images.githubusercontent.com/111185949/273497758-311827db-671b-4bbe-a437-aa0c6e609c33.png"
+                alt="user photo"
+              />
+            </a>
           </div>
         </li>
       </ul>

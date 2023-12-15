@@ -31,7 +31,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -57,7 +57,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -83,7 +83,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -109,7 +109,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -135,7 +135,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -160,7 +160,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -185,7 +185,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -210,7 +210,7 @@ const softskill = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>

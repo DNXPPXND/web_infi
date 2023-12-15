@@ -4,78 +4,83 @@ import { useNavigate, useParams } from "react-router-dom";
 import Nav_admin from "../../components/admin/Nav_admin";
 import Navbar_admin from "../../components/navbar/Navbar_admin";
 import Footer_page from "../../components/footer/Footer_page";
+import Swal from "sweetalert2";
 
 function Teacher_update() {
-  const navigate = useNavigate();
-  const { teacher_id } = useParams(); // รับค่า teacherId จาก URL
-  const [formData, setFormData] = useState({
-    teacher_fname: "",
-    teacher_lname: "",
-    teacher_description: "",
-    teacher_company: "",
-    teacher_position: "",
-    teacher_email: "",
-    teacher_mobile: "",
-    teacher_line: "",
-  });
-
-  useEffect(() => {
-    // เรียก API เพื่อดึงข้อมูลอาจารย์ผู้สอนตาม teacherId
-    axios
-      .get(`http://localhost:3333/admin-teacher/view/${teacher_id}`)
-      .then((response) => {
-        const teacherData = response.data;
-        setFormData({
-          teacher_fname: teacherData.teacher_fname,
-          teacher_lname: teacherData.teacher_lname,
-          teacher_description: teacherData.teacher_description,
-          teacher_company: teacherData.teacher_company,
-          teacher_position: teacherData.teacher_position,
-          teacher_email: teacherData.teacher_email,
-          teacher_mobile: teacherData.teacher_mobile,
-          teacher_line: teacherData.teacher_line,
+    const { teacher_id } = useParams();
+    const navigate = useNavigate();
+    useEffect(() => {
+      axios
+        .get(`http://localhost:3333/admin-teacher/view/${teacher_id}`)
+        .then((response) => {
+          setTeacher_fname(response.data.teacher.teacher_fname);
+          setTeacher_lname(response.data.teacher.teacher_lname); 
+          setTeacher_pic(response.data.teacher.teacher_pic); 
+          setTeacher_description(response.data.teacher.teacher_description);
+          setTeacher_company(response.data.teacher.teacher_company);
+          setTeacher_position(response.data.teacher.teacher_position);
+          setTeacher_email(response.data.teacher.teacher_email);
+          setTeacher_mobile(response.data.teacher.teacher_mobile);
+          setTeacher_line(response.data.teacher.teacher_line);
+        })
+        .catch((error) => {
+          console.error(error);
         });
-      })
-      .catch((error) => {
-        console.error("เกิดข้อผิดพลาดในการดึงข้อมูล: ", error);
-      });
-  }, [teacher_id]);
+    }, [teacher_id]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      var data = {
+        teacher_id: teacher_id,
+        teacher_fname: teacher_fname,
+        teacher_lname: teacher_lname,
+        teacher_pic: teacher_pic,
+        teacher_description: teacher_description,
+        teacher_company: teacher_company,
+        teacher_position: teacher_position,
+        teacher_email: teacher_email,
+        teacher_mobile: teacher_mobile,
+        teacher_line: teacher_line,
+      };
 
-    setFormData({
-      ...formData,
-      [name]: newValue,
-    });
-  };
-
-  const handleEdit = (event) => {
-    event.preventDefault();
-    const urlapi = `http://localhost:3333/view/update/${teacher_id}`;
-    const param = {
-      teacher_fname: formData.teacher_fname,
-      teacher_lname: formData.teacher_lname,
-      teacher_description: formData.teacher_description,
-      teacher_company: formData.teacher_company,
-      teacher_position: formData.teacher_position,
-      teacher_email: formData.teacher_email,
-      teacher_mobile: formData.teacher_mobile,
-      teacher_line: formData.teacher_line,
+              axios
+                .put(
+                  `http://localhost:3333/admin-teacher/update/${teacher_id}`,
+                  data
+                )
+                .then((resp) => {
+                  // Replace the standard alert with SweetAlert2
+                  Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "แก้ไขข้อมูลสำเร็จ",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      navigate("/view");
+                    }
+                  });
+                })
+                .catch((e) => {
+                  console.log(e);
+                  // Replace the standard alert with SweetAlert2
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "เกิดข้อผิดพลาดในการแก้ไขข้อมูล",
+                  });
+                });
     };
-    axios
-      .put(urlapi, param)
-      .then((resp) => {
-        navigate("/view");
-        console.log(resp);
-        alert("แก้ไขข้อมูลสำเร็จ");
-      })
-      .catch((e) => {
-        console.log(e);
-        alert("เกิดข้อผิดพลาดในการแก้ไขข้อมูล");
-      });
-  };
+
+
+    const [teacher_fname, setTeacher_fname] = useState("");
+    const [teacher_lname, setTeacher_lname] = useState("");
+    const [teacher_pic, setTeacher_pic] = useState("");
+    const [teacher_description, setTeacher_description] = useState("");
+    const [teacher_company, setTeacher_company] = useState("");
+    const [teacher_position, setTeacher_position] = useState("");
+    const [teacher_email, setTeacher_email] = useState("");
+    const [teacher_mobile, setTeacher_mobile] = useState("");
+    const [teacher_line, setTeacher_line] = useState("");
 
   return (
     <>
@@ -89,21 +94,21 @@ function Teacher_update() {
                 แก้ไขข้อมูลอาจารย์ผู้สอน
               </div>
             </div>
-            <form onSubmit={handleEdit}>
+            <form onSubmit={handleSubmit}>
               <div className="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
                   <label
                     htmlFor="teacher_fname"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    First name
+                    ชื่อจริง
                   </label>
                   <input
                     type="text"
                     id="teacher_fname"
                     name="teacher_fname"
-                    value={formData.teacher_fname}
-                    onChange={handleChange}
+                    value={teacher_fname}
+                    onChange={(e) => setTeacher_fname(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     required
                   />
@@ -113,45 +118,51 @@ function Teacher_update() {
                     htmlFor="last_name"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Last name
+                    นามสกุล
                   </label>
                   <input
                     type="text"
                     id="teacher_lname"
                     name="teacher_lname"
-                    value={formData.teacher_lname}
-                    onChange={handleChange}
+                    value={teacher_lname}
+                    onChange={(e) => setTeacher_lname(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     required
                   />
                 </div>
               </div>
               <div>
-                <label
-                  className="block mb-2 text-sm font-medium text-gray-900 "
-                  htmlFor="file_input"
-                >
-                  Upload file
-                </label>
-                <input
-                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 "
-                  id="file_input"
-                  type="file"
-                />
+                <div class="mb-6">
+                  <label
+                    for="email"
+                    class="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                    รูปผู้สอน (URL Images)
+                  </label>
+                  <input
+                    type="text"
+                    id="teacher_pic"
+                    name="teacher_pic"
+                    value={teacher_pic}
+                    onChange={(e) => setTeacher_pic(e.target.value)}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    required
+                  />
+                </div>
               </div>
               <div>
                 <label
                   htmlFor="message"
                   className="block mb-2 text-sm font-medium text-gray-900 "
                 >
-                  Description
+                  คำอธิบาย
                 </label>
                 <textarea
                   type="text"
                   id="teacher_description"
                   name="teacher_description"
-                  value={formData.teacher_description}
-                  onChange={handleChange}
+                  value={teacher_description}
+                  onChange={(e) => setTeacher_description(e.target.value)}
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
                 ></textarea>
               </div>
@@ -161,14 +172,14 @@ function Teacher_update() {
                     htmlFor="teacher_fname"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Company
+                    บริษัท
                   </label>
                   <input
                     type="text"
                     id="teacher_company"
                     name="teacher_company"
-                    value={formData.teacher_company}
-                    onChange={handleChange}
+                    value={teacher_company}
+                    onChange={(e) => setTeacher_company(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     required
                   />
@@ -178,14 +189,14 @@ function Teacher_update() {
                     htmlFor="last_name"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Position
+                    ตำแหน่ง
                   </label>
                   <input
                     type="text"
                     id="teacher_position"
                     name="teacher_position"
-                    value={formData.teacher_position}
-                    onChange={handleChange}
+                    value={teacher_position}
+                    onChange={(e) => setTeacher_position(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     required
                   />
@@ -197,14 +208,14 @@ function Teacher_update() {
                     htmlFor="email"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Email address
+                    อีเมล
                   </label>
                   <input
                     type="email"
                     id="teacher_email"
                     name="teacher_email"
-                    value={formData.teacher_email}
-                    onChange={handleChange}
+                    value={teacher_email}
+                    onChange={(e) => setTeacher_email(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     required
                   />
@@ -214,14 +225,14 @@ function Teacher_update() {
                     htmlFor="phone"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Phone number
+                    เบอร์โทร
                   </label>
                   <input
                     type="tel"
                     id="teacher_mobile"
                     name="teacher_mobile"
-                    value={formData.teacher_mobile}
-                    onChange={handleChange}
+                    value={teacher_mobile}
+                    onChange={(e) => setTeacher_mobile(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     required
                   />
@@ -231,14 +242,14 @@ function Teacher_update() {
                     htmlFor="teacher_fname"
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Company
+                    ไอดีไลน์
                   </label>
                   <input
                     type="text"
                     id="teacher_line"
                     name="teacher_line"
-                    value={formData.teacher_line}
-                    onChange={handleChange}
+                    value={teacher_line}
+                    onChange={(e) => setTeacher_line(e.target.value)}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                     required
                   />
@@ -249,7 +260,7 @@ function Teacher_update() {
                   type="submit"
                   className="items-stretch text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  แก้ไขข้อมูลเรียบร้อย
+                  แก้ไขข้อมูล
                 </button>
               </div>
             </form>

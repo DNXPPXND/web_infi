@@ -10,6 +10,7 @@ export default function SignInSide() {
     password: "",
     fullname: "",
     lastname: "",
+    category_id: "",
   });
   const handleChange = (e) => {
     const value = e.target.value;
@@ -18,28 +19,26 @@ export default function SignInSide() {
       [e.target.name]: value,
     });
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const urlapi = "http://localhost:3333/resgister";
-    const param = {
-      email: data.email,
-      password: data.password,
-      fullname: data.fullname,
-      lastname: data.lastname,
-    };
-    axios
-      .post(urlapi, param)
-      .then((resp) => {
-        navigate("/agreements");
-        console.log(resp);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-
-
-    //const data = new FormData(event.currentTarget);
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const urlapi = "http://localhost:3333/register";
+  const param = {
+    email: data.email,
+    password: data.password,
+    fullname: data.fullname,
+    lastname: data.lastname,
+    category_id: data.category_id,
   };
+  axios
+    .post(urlapi, param)
+    .then((resp) => {
+      navigate("/agreements");
+      console.log(resp);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+};
   return (
     <div className="grid grid-cols-1  sm:grid-cols-2 h-screen w-full font-inter">
       <div className="hidden sm:block ">
@@ -100,15 +99,30 @@ export default function SignInSide() {
               onChange={handleChange}
             />
           </div>
-
-            <button
-              className="w-full my-5 py-2 bg-cyan-300 rounded-full text-white "
-              onClick={() => handleSubmit()}
-              type="submit"
+          <div className="py-2">
+            <label> ประเภทบทเรียนที่สนใจ </label>
+            <select
+              id="category_id"
+              name="category_id"
+              onChange={handleChange}
+              value={data.category_id}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             >
-              สมัครสมาชิก
-            </button>
-          
+              <option value="1">datadesign</option>
+              <option value="2">softskill</option>
+              <option value="3">systemanalysis</option>
+              <option value="6">programimg</option>
+              <option value="11">uxui</option>
+              <option value="13">tecnology</option>
+            </select>
+          </div>
+
+          <button
+            className="w-full my-5 py-2 bg-cyan-300 rounded-full text-white "
+            type="submit"
+          >
+            สมัครสมาชิก
+          </button>
 
           <div className="mt-2 text-center  flex justify-center ">
             <p>หากคุณมีบัญชีผู้ใช้งานแล้ว </p>

@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import Nav_admin from "../../components/admin/Nav_admin";
 import Navbar_admin from "../../components/navbar/Navbar_admin";
 import Footer_page from "../../components/footer/Footer_page";
+import Swal from "sweetalert2";
 
 function Teacher_add() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     teacher_fname: "",
     teacher_lname: "",
+    teacher_pic: "",
     teacher_description: "",
     teacher_company: "",
     teacher_position: "",
@@ -26,33 +28,38 @@ function Teacher_add() {
       [name]: newValue,
     });
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const urlapi = "http://localhost:3333/admin-teacher";
-    const param = {
-      teacher_fname: formData.teacher_fname,
-      teacher_lname: formData.teacher_lname,
-      teacher_description: formData.teacher_description,
-      teacher_company: formData.teacher_company,
-      teacher_position: formData.teacher_position,
-      teacher_email: formData.teacher_email,
-      teacher_mobile: formData.teacher_mobile,
-      teacher_line: formData.teacher_line,
-    };
-    axios
-      .post(urlapi, param)
-      .then((resp) => {
-        navigate("/view");
-        console.log(resp);
-        alert("บันทึกข้อมูลสำเร็จ");
-      })
-      .catch((e) => {
-        console.log(e);
-        alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-      });
-
-    //const data = new FormData(event.currentTarget);
-  };
+ const handleSubmit = (event) => {
+   event.preventDefault();
+   const urlapi = "http://localhost:3333/admin-teacher";
+   const param = {
+     teacher_fname: formData.teacher_fname,
+     teacher_lname: formData.teacher_lname,
+     teacher_pic: formData.teacher_pic,
+     teacher_description: formData.teacher_description,
+     teacher_company: formData.teacher_company,
+     teacher_position: formData.teacher_position,
+     teacher_email: formData.teacher_email,
+     teacher_mobile: formData.teacher_mobile,
+     teacher_line: formData.teacher_line,
+   };
+   axios
+     .post(urlapi, param)
+     .then((resp) => {
+       navigate("/view");
+       console.log(resp);
+       Swal.fire({
+         title: "เพื่มข้อมูลสำเร็จ",
+         icon: "success",
+       });
+     })
+     .catch((e) => {
+       console.log(e);
+       Swal.fire({
+         title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+         icon: "error",
+       });
+     });
+ };
 
   return (
     <>
@@ -73,7 +80,7 @@ function Teacher_add() {
                     for="teacher_fname"
                     class="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    First name
+                    ชิ่อ
                   </label>
                   <input
                     type="text"
@@ -82,7 +89,7 @@ function Teacher_add() {
                     value={formData.teacher_fname}
                     onChange={handleChange}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    placeholder="name"
+                    placeholder="ชิ่อ"
                     required
                   />
                 </div>
@@ -91,7 +98,7 @@ function Teacher_add() {
                     for="last_name"
                     class="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Last name
+                    นามสกุล
                   </label>
                   <input
                     type="text"
@@ -100,75 +107,7 @@ function Teacher_add() {
                     value={formData.teacher_lname}
                     onChange={handleChange}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    placeholder="lastname"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  class="block mb-2 text-sm font-medium text-gray-900 "
-                  for="file_input"
-                >
-                  Upload file
-                </label>
-                <input
-                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 "
-                  id="file_input"
-                  type="file"
-                />
-              </div>
-              <div>
-                <label
-                  for="message"
-                  class="block mb-2 text-sm font-medium text-gray-900 "
-                >
-                  Description
-                </label>
-                <textarea
-                  type="text"
-                  id="teacher_description"
-                  name="teacher_description"
-                  value={formData.teacher_description}
-                  onChange={handleChange}
-                  class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
-                  placeholder="Write your thoughts here..."
-                ></textarea>
-              </div>
-              <div class="grid gap-6 mb-6 md:grid-cols-2">
-                <div>
-                  <label
-                    for="teacher_fname"
-                    class="block mb-2 text-sm font-medium text-gray-900 "
-                  >
-                    Company
-                  </label>
-                  <input
-                    type="text"
-                    id="teacher_company"
-                    name="teacher_company"
-                    value={formData.teacher_company}
-                    onChange={handleChange}
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    placeholder="teacher_company"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    for="last_name"
-                    class="block mb-2 text-sm font-medium text-gray-900 "
-                  >
-                    Position
-                  </label>
-                  <input
-                    type="text"
-                    id="teacher_position"
-                    name="teacher_position"
-                    value={formData.teacher_position}
-                    onChange={handleChange}
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    placeholder="teacher_position"
+                    placeholder="นามสกุล"
                     required
                   />
                 </div>
@@ -179,7 +118,82 @@ function Teacher_add() {
                     for="email"
                     class="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Email address
+                    รูปผู้สอน (URL Images)
+                  </label>
+                  <input
+                    type="text"
+                    id="teacher_pic"
+                    name="teacher_pic"
+                    value={formData.teacher_pic}
+                    onChange={handleChange}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholder="URL Images"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  for="message"
+                  class="block mb-2 text-sm font-medium text-gray-900 "
+                >
+                  คำอธิบาย
+                </label>
+                <textarea
+                  type="text"
+                  id="teacher_description"
+                  name="teacher_description"
+                  value={formData.teacher_description}
+                  onChange={handleChange}
+                  class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+                  placeholder="คำอธิบาย"
+                ></textarea>
+              </div>
+              <div class="grid gap-6 mb-6 md:grid-cols-2">
+                <div>
+                  <label
+                    for="teacher_fname"
+                    class="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                    บริษัท
+                  </label>
+                  <input
+                    type="text"
+                    id="teacher_company"
+                    name="teacher_company"
+                    value={formData.teacher_company}
+                    onChange={handleChange}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    placeholder="บริษัท"
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    for="last_name"
+                    class="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                    ตำแหน่ง
+                  </label>
+                  <input
+                    type="text"
+                    id="teacher_position"
+                    name="teacher_position"
+                    value={formData.teacher_position}
+                    onChange={handleChange}
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    placeholder="ตำแหน่ง"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <div class="mb-6">
+                  <label
+                    for="email"
+                    class="block mb-2 text-sm font-medium text-gray-900 "
+                  >
+                    อีเมล
                   </label>
                   <input
                     type="email"
@@ -188,7 +202,7 @@ function Teacher_add() {
                     value={formData.teacher_email}
                     onChange={handleChange}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    placeholder="namelastname@gmail.com"
+                    placeholder="อีเมล"
                     required
                   />
                 </div>
@@ -197,7 +211,7 @@ function Teacher_add() {
                     for="phone"
                     class="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Phone number
+                    เบอร์โทร
                   </label>
                   <input
                     type="tel"
@@ -206,7 +220,7 @@ function Teacher_add() {
                     value={formData.teacher_mobile}
                     onChange={handleChange}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    placeholder="123-45-678"
+                    placeholder="เบอร์โทร"
                     required
                   />
                 </div>
@@ -215,7 +229,7 @@ function Teacher_add() {
                     for="teacher_fname"
                     class="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Company
+                    ไอดีไลน์
                   </label>
                   <input
                     type="text"
@@ -224,7 +238,7 @@ function Teacher_add() {
                     value={formData.teacher_line}
                     onChange={handleChange}
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                    placeholder="teacher_line"
+                    placeholder="ไอดีไลน์"
                     required
                   />
                 </div>

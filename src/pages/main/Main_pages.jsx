@@ -4,30 +4,30 @@ import Footer_page from "../../components/footer/Footer_page.jsx";
 import Course_more_page from "../../components/course/Course_more_page.jsx";
 import Newletter from "../../components/Newsletter.jsx";
 import Header_pages from "../../components/Header_pages.jsx";
+import Course_more_page_onsite from "../../components/course/Course_more_page_onsite.jsx";
+import Site from "../../components/course/Site.jsx";
+import Site_line from "../../components/course/Site_line.jsx";
 
-const Hero = () => {
+
+const Main_pages = () => {
   return (
-    <>
+    <div className="transition-transform duration-500 ease-in-out transform scale-100 ">
       <Navbar_pages />
       <Header_pages />
       <h1 className="mt-20 text-2xl font-bold text-center ">คอร์สแนะนำ</h1>
       <Course_more_page />
-      <h1 className="mt-20 text-2xl font-bold text-center ">DATA DESIGN</h1>
-      <Course_more_page />
-      <h1 className="mt-20 text-2xl font-bold text-center">UX/UI</h1>
-      <Course_more_page />
-      <h1 className="mt-20 text-2xl font-bold text-center">PROGRAMING</h1>
-      <Course_more_page />
-      <Newletter />
-      <h1 className="mt-20 text-2xl font-bold text-center">TECHOLOGY</h1>
-      <Course_more_page />
-      <h1 className="mt-20 text-2xl font-bold text-center">SOFTSKILL</h1>
-      <Course_more_page />
-      <h1 className="mt-20 text-2xl font-bold text-center">SYSTEM ANALYSIS</h1>
-      <Course_more_page />
+      <h1 className="mt-20 text-2xl font-bold text-center ">
+        คอร์สเรียนออนไลน์
+      </h1>
+      <Site_line/>
+      <Newletter className=" mt-20" />
+      <h1 className="mt-20 text-2xl font-bold text-center ">
+        คอร์สเรียนออนไซต์
+      </h1>
+      <Site/> 
       <Footer_page />
-    </>
+    </div>
   );
 };
 
-export default Hero;
+export default Main_pages;

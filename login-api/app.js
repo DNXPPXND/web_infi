@@ -58,7 +58,7 @@ app.post('/login', jsonParser, function (req, res, next) {
                 // Load hash from your password DB.
                 bcrypt.compare(req.body.password, users[0].password, function(err, isLogin) {
                     if (isLogin) {
-                        var token = jwt.sign({ email: users[0].email }, secret , { expiresIn: '1h' });
+                        var token = jwt.sign({ email: users[0].email }, secret , { expiresIn: '1d' });
                         res.json({status: 'ok' , massage: 'Login success',token })
                         
                     } else{

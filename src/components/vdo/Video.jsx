@@ -4,7 +4,7 @@ import YouTube from "react-youtube";
 class YouTubeVideo extends React.Component {
   render() {
     // รหัสวิดีโอ YouTube ที่คุณต้องการแสดง
-    const videoId = "w_1JT2hLJUU";
+    const videoId = "m8Icp_Cid5o";
 
     // กำหนดค่าตัวเลือกของวิดีโอ
     const opts = {

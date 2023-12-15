@@ -1,44 +1,65 @@
 import React, { useState } from "react";
 import loginlogo from "../../assets/loginlogo.png";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function SignInSide() {
   const navigate = useNavigate();
-  
+  const { id } = useParams();
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-   const handleChange = (e) => {
-     const value = e.target.value;
-     setData({
-       ...data,
-       [e.target.name]: value,
-     });
-   };
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      const urlapi = "http://localhost:3333/login";
-      const param = {
-        email: data.email,
-        password: data.password,
-      };
-      axios
-        .post(urlapi, param)
-        .then((resp) => {
-          navigate("/main-profile");
-          console.log(resp);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
 
-      //const data = new FormData(event.currentTarget);
+  const [loginStatus, setLoginStatus] = useState(null);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setData({
+      ...data,
+      [e.target.name]: value,
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const urlapi = "http://localhost:3333/login";
+    const param = {
+      email: data.email,
+      password: data.password,
     };
+    axios
+      .post(urlapi, param)
+      .then((resp) => {
+        if (resp.data.status === "ok") {
+          if (resp.data.message === "admin") {
+            navigate("/view");
+          } else {
+            // นี่คือส่วนที่ต้องแก้
+            navigate(`/users-profile/${resp.data.id}`); // ให้ใช้ id ที่ได้จาก response
+          }
+          setLoginStatus("success");
+
+          Swal.fire({
+            title: "เข้าสู่ระบบสำเร็จ!",
+            text: "คุณได้เข้าสู่ระบบเรียบร้อยแล้ว",
+            icon: "success",
+          });
+        } else {
+          setLoginStatus("error");
+        }
+        console.log(resp);
+      })
+      .catch((e) => {
+        console.log(e);
+        setLoginStatus("error");
+      });
+  };
+
   return (
     <div className="grid grid-cols-1  sm:grid-cols-2 h-screen w-full">
-      <div className="hidden sm:block ">
+      <div className="hidden sm:block">
         <img className="w-full h-full object-cover" src={loginlogo} alt="" />
       </div>
       <div className="bg-white flex flex-col justify-center">
@@ -74,21 +95,13 @@ export default function SignInSide() {
               value={data.password}
             />
           </div>
-          <div className="flex justify-between text-gray-600 py-2">
-            <p className="flex-item-center">
-              <input className="mr-2" type="checkbox" />
-              ให้ฉันอยู่ในระบบ
-            </p>
-            <p>ลืมรหัสผ่าน</p>
-          </div>
-          <a href="https://www.youtube.com/watch?v=AA4Yb5u59rw&list=RDAA4Yb5u59rw&start_radio=1">
-            <button
-              className="w-full my-5 py-2 bg-cyan-300 text-white rounded-full "
-              type="submit"
-            >
-              เข้าสู่ระบบ
-            </button>
-          </a>
+
+          <button
+            className="w-full my-5 py-2 bg-cyan-300 text-white rounded-full "
+            type="submit"
+          >
+            เข้าสู่ระบบ
+          </button>
 
           <div className="mt-2  text-center flex justify-center ">
             <p>หากคุณมีบัญชีผู้ใช้งานแล้ว </p>
@@ -96,6 +109,17 @@ export default function SignInSide() {
               <p className="underline px-3">สมัครบัญชีผู้ใช้</p>
             </a>
           </div>
+
+          {loginStatus === "success" && (
+            <div className="text-green-600 text-center mt-3">
+              เข้าสู่ระบบสำเร็จ!
+            </div>
+          )}
+          {loginStatus === "error" && (
+            <div className="text-red-600 text-center mt-3">
+              เข้าสู่ระบบไม่สำเร็จ โปรดตรวจสอบอีเมลและรหัสผ่านของคุณ
+            </div>
+          )}
         </form>
       </div>
     </div>

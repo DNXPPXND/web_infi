@@ -1,24 +1,23 @@
-import React, { useState , useEffect }from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Link from '@mui/material/Link';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Navbar_pages from '../../components/navbar/Navbar_admin';
+import React, { useState, useEffect } from "react";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Link from "@mui/material/Link";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import Navbar_pages from "../../components/navbar/Navbar_admin";
 import Footer_page from "../../components/footer/Footer_page";
 import axios from "axios";
-import Nav_admin from '../../components/admin/Nav_admin';
-
-
+import Nav_admin from "../../components/admin/Nav_admin";
+import Swal from "sweetalert2";
 
 export default function Teacher_view() {
   const [items, setItems] = useState([]);
@@ -31,16 +30,32 @@ export default function Teacher_view() {
       });
   }, []);
   const handleDelete = (teacher_id) => {
-    const confirm = window.confirm("คุณต้องการจะลบบัญขีนี้หรอไม่");
-    if (confirm) {
-      axios
-        .delete("http://localhost:3333/admin-teacher/delete/" + teacher_id)
-        .then((res) => {
-          window.location.reload();
-        })
-        .catch((err) => console.log(err));
-    }
+    Swal.fire({
+      title: "คุณต้องการจะลบบัญชีนี้หรือไม่?",
+      text: "การกระทำนี้ไม่สามารถยกเลิกได้",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "ลบ",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete("http://localhost:3333/admin-teacher/delete/" + teacher_id)
+          .then((res) => {
+            Swal.fire("ลบสำเร็จ", "บัญชีได้ถูกลบแล้ว", "success");
+            // โหลดหน้าเว็บหลังจากการลบสำเร็จ
+            window.location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบบัญชีได้", "error");
+          });
+      }
+    });
   };
+
   const handleUpdate = (teacher_id) => {
     window.location = `/view/update/${teacher_id}`;
   };
@@ -73,12 +88,11 @@ export default function Teacher_view() {
                       <TableHead>
                         <TableRow>
                           <TableCell>ลำดับ</TableCell>
-                          <TableCell align="right">เบอร์โทร</TableCell>
-                          <TableCell align="right">สถานที่</TableCell>
-                          <TableCell align="right">ชื่อ</TableCell>
-                          <TableCell align="right">นามสกุล</TableCell>
-                          <TableCell align="right">อีเมล</TableCell>
-                          <TableCell align="right">ตัวเลือก</TableCell>
+                          <TableCell align="center">ชื่อ</TableCell>
+                          <TableCell align="center">นามสกุล</TableCell>
+                          <TableCell align="center">อีเมล</TableCell>
+                          <TableCell align="center">รูปภาพ</TableCell>
+                          <TableCell align="center">ตัวเลือก</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -96,22 +110,25 @@ export default function Teacher_view() {
                             >
                               {index + 1}
                             </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_mobile}
-                            </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_company}
-                            </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="left">
                               {row.teacher_fname}
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="left">
                               {row.teacher_lname}
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="left">
                               {row.teacher_email}
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">
+                              <Box display="flex" justifyContent="center">
+                                <img
+                                  src={row.teacher_pic}
+                                  style={{ width: "100px", height: "100px" }}
+                                />
+                              </Box>
+                            </TableCell>
+
+                            <TableCell align="left">
                               <ButtonGroup
                                 variant="outlined"
                                 aria-label="outlined button group"

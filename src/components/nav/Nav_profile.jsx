@@ -1,10 +1,36 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 
 const Nav_profile = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    // Show a SweetAlert confirmation dialog
+    Swal.fire({
+      title: "คุณแน่ใจหรือว่าต้องการออกจากระบบ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ใช่, ออกจากระบบ",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // User confirmed, log out
+        // Remove Token from localStorage (or session storage)
+        localStorage.removeItem("authToken");
+
+        // Navigate the user to the login or home page
+        navigate("/"); // Update this to your actual URL
+      }
+    });
   };
   return (
     <>
@@ -51,7 +77,7 @@ const Nav_profile = () => {
             </li>
             <li>
               <a
-                href="/"
+                href="/recommends"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group"
               >
                 <svg
@@ -64,13 +90,12 @@ const Nav_profile = () => {
                   <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z" />
                 </svg>
                 <span class="flex-1 ml-3 whitespace-nowrap text-black">
-                  คอร์สเรียนที่ถูกใจ
+                  คอร์สเรียนที่แนะนำ
                 </span>
               </a>
             </li>
             <li>
               <a
-                href="/"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group"
               >
                 <svg
@@ -83,7 +108,7 @@ const Nav_profile = () => {
                   <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z" />
                 </svg>
                 <span class="flex-1 ml-3 whitespace-nowrap text-black">
-                  ออกจากระบบ
+                  <button onClick={handleLogout}>ออกจากระบบ</button>
                 </span>
               </a>
             </li>

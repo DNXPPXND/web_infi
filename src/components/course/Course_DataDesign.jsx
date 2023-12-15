@@ -11,7 +11,6 @@ import poster8 from "./poster/poster8.jpg";
 const DataDesign = () => {
   return (
     <>
-    
       <div class="mt-10 p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-5">
         <div class="rounded overflow-hidden shadow-lg">
           <div className="w-full">
@@ -31,7 +30,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -57,7 +56,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -83,7 +82,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -109,7 +108,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -135,7 +134,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -160,7 +159,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -185,7 +184,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>
@@ -210,7 +209,7 @@ const DataDesign = () => {
             </p>
             <div className="flex justify-center mt-10">
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <a href="/onlinecourse" target="_blank">
+                <a href="/online-course" target="_blank">
                   ลงทะเบียนเรียนออนไลน์
                 </a>
               </button>

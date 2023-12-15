@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Agreement_pages = () => {
   const navigate = useNavigate();
@@ -13,12 +14,18 @@ const Agreement_pages = () => {
     if (isChecked) {
       navigate("/main-profile");
       // ทำการดำเนินการเมื่อผู้ใช้กด "Agree" และยอมรับข้อตกลง
+      Swal.fire({
+        title: "สมัครสมาชิกสำเร็จ!",
+        text: "คุณได้สมัครสมาชิกเรียบร้อยแล้ว",
+        icon: "success",
+      });
       console.log("User agreed to terms.");
     } else {
       // แสดงข้อความให้ผู้ใช้เลือกยอมรับก่อน
       alert("โปรด ยอมรับนโยบายการคุ้มครองข้อมูลส่วนบุคคล.!!!");
     }
   };
+  
   return (
     <>
       <div className="h-screen  ">

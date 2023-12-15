@@ -17,30 +17,48 @@ import Navbar_pages from "../../components/navbar/Navbar_admin";
 import Footer_page from "../../components/footer/Footer_page";
 import axios from "axios";
 import Nav_admin from "../../components/admin/Nav_admin";
+import Swal from "sweetalert2";
 
-export default function Rank() {
+
+export default function Admin_view() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3333/admin-teacher/view")
+    fetch("http://localhost:3333/admin-users/view/admin")
       .then((res) => res.json())
       .then((result) => {
         setItems(result);
       });
   }, []);
-  const handleDelete = (teacher_id) => {
-    const confirm = window.confirm("คุณต้องการจะลบบัญขีนี้หรอไม่");
-    if (confirm) {
+const handleDelete = (id) => {
+  Swal.fire({
+    title: "คุณต้องการจะลบบัญชีนี้หรือไม่?",
+    text: "การกระทำนี้ไม่สามารถยกเลิกได้",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "ลบ",
+    cancelButtonText: "ยกเลิก",
+  }).then((result) => {
+    if (result.isConfirmed) {
       axios
-        .delete("http://localhost:3333/admin-teacher/delete/" + teacher_id)
+        .delete(`http://localhost:3333/admin-users/delete/${id}`)
         .then((res) => {
-          window.location.reload();
+          Swal.fire("ลบสำเร็จ", "บัญชีได้ถูกลบแล้ว", "success").then(() => {
+            window.location.reload();
+          });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบบัญชีได้", "error");
+        });
     }
-  };
-  const handleUpdate = (teacher_id) => {
-    window.location = `/view/update/${teacher_id}`;
+  });
+};
+
+  const handleUpdate = (id) => {
+    window.location = `/view/update/${id}`;
   };
 
   return (
@@ -57,13 +75,8 @@ export default function Rank() {
                   <Box display="flex">
                     <Box sx={{ flexGrow: 1 }}>
                       <Typography variant="h6" gutterBottom component="div">
-                        ตารางลำดับคะแนน
+                        อาจารย์
                       </Typography>
-                    </Box>
-                    <Box>
-                      <Link href="/view/add-teacher">
-                        <Button variant="contained">เพิ่ม</Button>
-                      </Link>
                     </Box>
                   </Box>
                   <TableContainer component={Paper}>
@@ -71,19 +84,16 @@ export default function Rank() {
                       <TableHead>
                         <TableRow>
                           <TableCell>ลำดับ</TableCell>
-                          <TableCell align="right">ประเภท</TableCell>
-                          <TableCell align="right">ระดับขั้น</TableCell>
-                          <TableCell align="right">ระดับขั้น</TableCell>
-                          <TableCell align="right">ระดับขั้น</TableCell>
-                          <TableCell align="right">ระดับขั้น</TableCell>
-                          <TableCell align="right">ระดับขั้น</TableCell>
-                          <TableCell align="right">ตัวเลือก</TableCell>
+                          <TableCell align="center">ชื่อ</TableCell>
+                          <TableCell align="center">นามสกุล</TableCell>
+                          <TableCell align="center">อีเมล</TableCell>
+                          <TableCell align="center">ตัวเลือก</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {items.map((row, index) => (
                           <TableRow
-                            key={row.teacher_id}
+                            key={row.id}
                             sx={{
                               "&:last-child td, &:last-child th": { border: 0 },
                             }}
@@ -95,36 +105,25 @@ export default function Rank() {
                             >
                               {index + 1}
                             </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_mobile}
+                            <TableCell align="left">
+                              {row.fullname}
                             </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_company}
+                            <TableCell align="left">
+                              {row.lastname}
                             </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_fname}
+                            <TableCell align="left">
+                              {row.email}
                             </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_lname}
-                            </TableCell>
-                            <TableCell align="right">
-                              {row.teacher_email}
-                            </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">
                               <ButtonGroup
                                 variant="outlined"
                                 aria-label="outlined button group"
                               >
                                 <Link>
-                                  <Button
-                                    variant="contained"
-                                    onClick={() => handleUpdate(row.teacher_id)}
-                                  >
-                                    แก้ไข
-                                  </Button>
+                                  
                                 </Link>
                                 <Button
-                                  onClick={() => handleDelete(row.teacher_id)}
+                                  onClick={() => handleDelete(row.id)}
                                 >
                                   ลบ
                                 </Button>
