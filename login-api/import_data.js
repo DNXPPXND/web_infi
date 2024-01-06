@@ -357,7 +357,7 @@ app.put(
   function (req, res, next) {
     connection.execute(
       "UPDATE onsite SET onsite_name = ?, onsite_details = ?, category_id = ?, onsite_pic = ?, teacher_id = ?, onsite_time = ?, onsite_location = ?, onsite_video = ? WHERE onsite_id = ?",
-      [
+      [  
         req.body.onsite_name,
         req.body.onsite_details,
         req.body.category_id,
@@ -755,7 +755,7 @@ app.post("/register", jsonParser, function (req, res, next) {
         hash,
         req.body.fullname,
         req.body.lastname,
-        req.body.category_id,
+        req.body.category_id, 
       ],
 
       function (err, results, fields) {
