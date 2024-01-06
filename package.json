@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "jwt-decode": "^4.0.0",
+    "sweetalert2": "^11.7.32"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
+}
