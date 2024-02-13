@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import logo from '../../../assets/logo.png';
 
 const Navbars_admin = () => {
   const [nav, setNav] = useState(false);
@@ -36,41 +37,11 @@ const Navbars_admin = () => {
     <div className="flex justify-between items-center h-20 mx-auto max-w-[1440px] text-black  font-inter">
       <span className="avatar">
         <div className="w-8 rounded">
-          <img src="logo.png" alt="Logo" />
+          <img src={logo} alt="Logo" />
         </div>
       </span>
       <h1 className="w-full text-2xl font-bold text-[#49CDD8]">INFI-LEARN</h1>
-      <div class="flex items-center justify-center h-full">
-        <div class="relative hidden md:flex w-full">
-          <input
-            type="text"
-            placeholder=""
-            class="py-2 px-6 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500 bg-white text-gray-700"
-          />
-          <button class="absolute right-0 top-0 h-full px-4 flex items-center bg-cyan-300 text-white rounded-full">
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 11a4 4 0 11-8 0 4 4 0 018 0z"
-              ></path>
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-4.35-4.35"
-              ></path>
-            </svg>
-          </button>
-        </div>
-      </div>
+      
       <ul className="hidden md:flex w-full ">
         <li className="p-3  ">
           <a href="/main">หน้าหลัก</a>

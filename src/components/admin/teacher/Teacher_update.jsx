@@ -50,7 +50,7 @@ function Teacher_update() {
           text: "แก้ไขข้อมูลสำเร็จ",
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/view");
+            navigate("/admin");
           }
         });
       })

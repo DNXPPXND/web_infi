@@ -19,6 +19,7 @@ function Teacher_add() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
+    console.log(newValue);
 
     setFormData({
       ...formData,
@@ -107,25 +108,28 @@ function Teacher_add() {
             </div>
           </div>
           <div>
-            <div class="mb-6">
-              <label
-                for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
-                รูปผู้สอน (URL Images)
-              </label>
-              <input
-                type="text"
-                id="teacher_pic"
-                name="teacher_pic"
-                value={formData.teacher_pic}
-                onChange={handleChange}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                placeholder="URL Images"
-                required
-              />
+            <label
+              className="block mb-2 text-sm font-medium text-gray-900"
+              htmlFor="teacher_pic"
+            >
+              Upload file
+            </label>
+            <input
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+              aria-describedby="user_avatar_help"
+              id="teacher_pic"
+              name="teacher_pic"
+              type="file"
+              onChange={handleChange}
+            />
+            <div
+              className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+              id="user_avatar_help"
+            >
+              A picture is course
             </div>
           </div>
+
           <div>
             <label
               for="message"
@@ -237,6 +241,7 @@ function Teacher_add() {
               />
             </div>
           </div>
+
           <div className="text-center mt-5">
             <button
               type="submit"

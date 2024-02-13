@@ -6,18 +6,18 @@ const app = express();
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var jwt = require("jsonwebtoken");
-const secret = "infi";
+const secret = "infi"; 
 const jsonParser = bodyParser.json();
 const multer = require("multer");
 const path = require("path");
 
-app.use(cors());
+app.use(cors()); 
 
 const connection = mysql.createConnection({
-  host: "localhost", // ใช้เฉพาะชื่อโฮส
-  user: "root",
-  database: "course-photo",
-});
+  host: "localhost",  
+  user: "root",  
+  database: "course-photo",   
+}); 
 
 connection.connect((err) => {
   if (err) {
@@ -34,13 +34,13 @@ app.post("/admin-users", jsonParser, function (req, res, next) {
     "INSERT INTO users (user_email, user_password, user_fname, user_lname, user_point) VALUES (?, ?, ?, ?, ?)",
     [
       req.body.user_email,
-      req.body.user_password,
+      req.body.user_password, 
       req.body.user_fname,
       req.body.user_lname,
       req.body.user_point,
     ],
     function (err, results, fields) {
-      if (err) {
+      if (err) { 
         res.json({ status: "error", message: err });
         return;
       }
@@ -70,7 +70,7 @@ app.get("/admin-users/view/admin", (req, res) => {
       return;
     }
     res.json(results);
-  }); 
+  });
 });
 // อัพเดท users  ************************************************
 app.put("/admin-users/update", jsonParser, function (req, res, next) {
@@ -131,7 +131,9 @@ app.post("/admin-teacher", jsonParser, function (req, res, next) {
         res.json({ status: "error", message: err });
         return;
       }
-      res.json({ status: "ok", data: req.body });
+      //upload()
+       
+      res.json({ status: "ok", data: req.body  });
     }
   );
 });
@@ -249,7 +251,7 @@ const upload = multer({
       path.extname(file.originalname).toLowerCase()
     );
     const mimetype = allowedFileTypes.test(file.mimetype);
-
+    console.log("upload")
     if (extname && mimetype) {
       return cb(null, true);
     } else {
@@ -306,7 +308,7 @@ app.post("/admin-onsite/add", jsonParser, function (req, res, next) {
       req.body.onsite_time,
       req.body.onsite_location,
       req.body.onsite_video,
-      req.body.onsite_status,
+      req.body.onsite_status, 
     ],
     function (err, results, fields) {
       if (err) {
@@ -336,7 +338,14 @@ app.get("/admin-onsite/view", (req, res) => {
 //เรียกดู course_online {id}  ************************************************
 app.get("/admin-onsite/view/:onsite_id", (req, res) => {
   const onsite_id = req.params.onsite_id;
-  const query = "SELECT * FROM onsite WHERE onsite_id = ?;";
+  const query = `
+    SELECT onsite.*, teacher.*, category.*
+    FROM onsite
+    LEFT JOIN teacher ON onsite.teacher_id = teacher.teacher_id
+    LEFT JOIN category ON onsite.category_id = category.category_id
+    WHERE onsite.onsite_id = ?;
+  `;
+
   connection.query(query, [onsite_id], (err, results) => {
     if (err) {
       console.error("Error querying database:", err);
@@ -350,6 +359,7 @@ app.get("/admin-onsite/view/:onsite_id", (req, res) => {
     }
   });
 });
+
 // อัพเดท course_line ************************************************
 app.put(
   "/admin-onsite/update/:onsite_id",
@@ -357,7 +367,7 @@ app.put(
   function (req, res, next) {
     connection.execute(
       "UPDATE onsite SET onsite_name = ?, onsite_details = ?, category_id = ?, onsite_pic = ?, teacher_id = ?, onsite_time = ?, onsite_location = ?, onsite_video = ? WHERE onsite_id = ?",
-      [  
+      [
         req.body.onsite_name,
         req.body.onsite_details,
         req.body.category_id,
@@ -422,7 +432,7 @@ app.post("/admin-site/add", jsonParser, function (req, res, next) {
       }
       res.json({ status: "ok", data: req.body });
     }
-  );   
+  );
 });
 //เรียกดู course_onsite
 app.get("/admin-site/view", (req, res) => {
@@ -755,7 +765,7 @@ app.post("/register", jsonParser, function (req, res, next) {
         hash,
         req.body.fullname,
         req.body.lastname,
-        req.body.category_id, 
+        req.body.category_id,
       ],
 
       function (err, results, fields) {
@@ -833,8 +843,6 @@ app.get("/user/:id", (req, res) => {
   });
 });
 /*********************************************************************************************************************************************************************************************************/
-
-
 
 app.listen(3333, function () {
   console.log("CORS-enabled web server listening on port 3333");

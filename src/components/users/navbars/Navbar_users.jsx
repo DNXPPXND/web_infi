@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-
 import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
-
+import logo from '../../../assets/logo.png';
 const Navbar_users = () => {
   const [nav, setNav] = useState(false);
+  
 
   const handleNav = () => {
     setNav(!nav);
@@ -12,7 +12,7 @@ const Navbar_users = () => {
     <div className="flex justify-between items-center h-20 mx-auto max-w-[1440px] text-black  font-inter">
       <span className="avatar">
         <a href="/" className="w-8 rounded">
-          <img src="logo.png" alt="Logo" />
+          <img src={logo} alt="Logo" />
         </a>
       </span>
       <h1 className="w-full text-2xl font-bold text-[#49CDD8]">
@@ -52,10 +52,9 @@ const Navbar_users = () => {
         </div>
       </div>
       <ul className="hidden md:flex w-full ">
-        <li className="p-3  ">
+        <li className="p-3  " >
           <a href="/">หน้าหลัก</a>
         </li>
-        <li></li>
         <li className="p-3  ">
           <a href="/about">เกี่ยวกับเว็บไซต์</a>
         </li>

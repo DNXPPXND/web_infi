@@ -1,12 +1,12 @@
 import React from "react";
-
+import logo from '../../../assets/logo.png'
 const Footer = () => {
   return (
     <div>
       <footer className="footer p-10 bg-base-300 text-base-content mt-20 ">
         <span className="avatar">
           <div className="w-8 rounded">
-            <img src="logo.png" />
+            <img src={logo} />
           </div>
         </span>
         <div>

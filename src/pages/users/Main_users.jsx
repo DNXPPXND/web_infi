@@ -2,14 +2,28 @@ import React from "react";
 import Navbar_users from "../../components/users/navbars/Navbar_users";
 import Footer from "../../components/users/footer/Footer";
 import Hero_users from "../../components/users/hero/Hero_users";
-
+import Onsite from "../../components/users/course/onsite/Onsite";
+import Online from "../../components/users/course/online/Online";
+import Newsletter from "../../components/users/newletter/Newsletter";
 
 const Main_users = () => {
   return (
-    <div className="transition-transform duration-500 ease-in-out transform scale-100 ">
-      <Navbar_users/>
-      <Hero_users/>
-      <Footer/>
+    <div className="transition-transform duration-500 ease-in-out transform scale-100">
+      <Navbar_users />
+      <Hero_users />
+
+      <h1 className="text-3xl font-mono font-bold text-center my-5 ">
+        คอร์สเรียนออนไลน์
+      </h1>
+      <Online />
+      <Newsletter />
+
+      <h1 className="text-3xl font-mono font-bold text-center my-5 ">
+        คอร์สเรียนออนไซต์
+      </h1>
+      <Onsite />
+
+      <Footer />
     </div>
   );
 };

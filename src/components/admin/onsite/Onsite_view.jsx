@@ -16,18 +16,18 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-function Skill_view() {
+function Onsite_view() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3333/admin-skill/view")
+    fetch("http://localhost:3333/admin-site/view")
       .then((res) => res.json())
       .then((result) => {
         setItems(result);
       });
   }, []);
 
-  const handleDelete = (skill_id) => {
+  const handleDelete = (site_id) => {
     Swal.fire({
       title: "คุณต้องการจะลบทักษะนี้หรือไม่?",
       text: "การกระทำนี้ไม่สามารถยกเลิกได้",
@@ -40,7 +40,7 @@ function Skill_view() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:3333/admin-skill/delete/${skill_id}`)
+          .delete(`http://localhost:3333/admin-skill/delete/${site_id}`)
           .then((res) => {
             Swal.fire("ลบสำเร็จ", "ทักษะได้ถูกลบแล้ว", "success").then(() => {
               window.location.reload();
@@ -54,8 +54,8 @@ function Skill_view() {
     });
   };
 
-  const handleUpdate = (skill_id) => {
-    window.location = `/admin/update/skill/${skill_id}`;
+  const handleUpdate = (site_id) => {
+    window.location = `/admin/update/skill/${site_id}`;
   };
 
   return (
@@ -90,7 +90,7 @@ function Skill_view() {
                   <TableBody>
                     {items.map((row, index) => (
                       <TableRow
-                        key={row.skill_id}
+                        key={row.site_id}
                         sx={{
                           "&:last-child td, &:last-child th": {
                             border: 0,
@@ -100,11 +100,11 @@ function Skill_view() {
                         <TableCell style={{ fontSize: "16px" }}>
                           {index + 1}
                         </TableCell>
-                        <TableCell align="left">{row.skill_name}</TableCell>
+                        <TableCell align="left">{row.site_name}</TableCell>
                         <TableCell align="center">
                           <Box display="flex" justifyContent="center">
                             <img
-                              src={row.skill_pic}
+                              src={row.site_pic}
                               style={{ width: "100px", height: "100px" }}
                             />
                           </Box>
@@ -118,12 +118,12 @@ function Skill_view() {
                             <Link>
                               <Button
                                 variant="contained"
-                                onClick={() => handleUpdate(row.skill_id)}
+                                onClick={() => handleUpdate(row.site_id)}
                               >
                                 แก้ไข
                               </Button>
                             </Link>
-                            <Button onClick={() => handleDelete(row.skill_id)}>
+                            <Button onClick={() => handleDelete(row.site_id)}>
                               ลบ
                             </Button>
                           </ButtonGroup>
@@ -141,4 +141,4 @@ function Skill_view() {
   );
 }
 
-export default Skill_view;
+export default Onsite_view;
