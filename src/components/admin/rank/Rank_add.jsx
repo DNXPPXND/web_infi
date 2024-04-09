@@ -3,37 +3,41 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function Rank_add() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    category_id: "",
     rank_name: "",
     rank_point: "",
-    rank_pic: "",
+    rank_pic: null,
   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-
+    const { name, value, files } = e.target;
+    const newValue = files ? files[0] : value;
     setFormData({
       ...formData,
       [name]: newValue,
     });
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const urlapi = "http://localhost:3333/admin-rank";
-    const param = {
-      rank_name: formData.rank_name,
-      rank_point: formData.rank_point,
-      rank_pic: formData.rank_pic,
-    };
+    const urlapi = "http://localhost:3333/create/rank";
+    const formDataToSend = new FormData();
+    console.log(formData);
+    formDataToSend.append("category_id", formData.category_id);
+    formDataToSend.append("rank_name", formData.rank_name);
+    formDataToSend.append("rank_point", formData.rank_point);
+    formDataToSend.append("rank_pic", formData.rank_pic);
+
     axios
-      .post(urlapi, param)
+      .post(urlapi, formDataToSend)
       .then((resp) => {
+        console.log(resp);
         if (
           resp.data.status === "error" &&
           resp.data.message === "ข้อมูลซ้ำกัน"
@@ -41,7 +45,7 @@ export default function Rank_add() {
           Swal.fire("ข้อมูลซ้ำกัน", "กรุณาตรวจสอบและลองใหม่อีกครั้ง", "error");
         } else {
           Swal.fire("เพิ่มข้อมูลสำเร็จ", "", "success").then(() => {
-            navigate("/rank-view");
+            navigate("/admin/rank");
           });
         }
         console.log(resp);
@@ -70,6 +74,19 @@ export default function Rank_add() {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
+                    label="หมวดหมู้"
+                    type="text"
+                    variant="outlined"
+                    id="category_id"
+                    name="category_id"
+                    value={formData.category_id}
+                    fullWidth
+                    required
+                    onChange={handleChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
                     label="ระดับขั้น"
                     type="text"
                     variant="outlined"
@@ -84,7 +101,7 @@ export default function Rank_add() {
                 <Grid item xs={12}>
                   <TextField
                     label="คะแนน"
-                    type="int"
+                    type="number"
                     variant="outlined"
                     id="rank_point"
                     name="rank_point"
@@ -95,15 +112,10 @@ export default function Rank_add() {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    label="อัปโหลดภาพระดับขั้น (URL)"
-                    type="text"
-                    variant="outlined"
+                  <input
+                    type="file"
                     id="rank_pic"
                     name="rank_pic"
-                    value={formData.rank_pic}
-                    fullWidth
-                    required
                     onChange={handleChange}
                   />
                 </Grid>

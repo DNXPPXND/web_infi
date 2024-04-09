@@ -51,7 +51,7 @@ const Course_info = () => {
                 ></iframe>
                 <h2 className="text-lg md:text-2xl font-bold mb-4">
                   {siteData.onsite_name}
-                  <p>{siteData.onsite_time}</p>
+                  
                 </h2>
               </div>
             </div>

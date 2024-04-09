@@ -33,6 +33,7 @@ const Register_all = () => {
         .post(urlapi, param)
         .then((resp) => {
           navigate("/agreements");
+          localStorage.setItem("id", resp.id);
           console.log(resp);
         })
         .catch((e) => {

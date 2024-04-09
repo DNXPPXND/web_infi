@@ -1,9 +1,15 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import Stepper from "./Stepper"; // ปรับตามตำแหน่งของไฟล์ Stepper
+
 const Course_details_site = () => {
   const { onsite_id } = useParams();
   const [siteData, setSiteData] = useState();
+  const [videoWatched, setVideoWatched] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
     axios
@@ -17,9 +23,6 @@ const Course_details_site = () => {
       });
   }, [onsite_id]);
 
-  const [videoWatched, setVideoWatched] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(0);
-
   const handleVideoEnd = () => {
     setVideoWatched(true);
   };
@@ -30,21 +33,18 @@ const Course_details_site = () => {
     setVideoProgress(progress);
   };
 
+  const handleStepperComplete = (isComplete) => {
+    if (isComplete) {
+      setComplete(true);
+    } else {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className="bg-white p-4 flex-1">
-      <div className="flex items-center justify-center">
-        <ul className="steps lg:steps-horizontal">
-          <a href="/online">
-            <li className="step step-primary">บทเรียน 1</li>
-          </a>
-
-          <li className="step">บทเรียน 2</li>
-          <li className="step">บทเรียน 3</li>
-          <li className="step">บทเรียน 4</li>
-          <li className="step">บทเรียน 5</li>
-          <li className="step">เสร็จสิ้นการสอน</li>
-        </ul>
-      </div>
+      <Stepper currentStep={currentStep} onComplete={handleStepperComplete} />
+      {/* เนื่องจาก Stepper เป็น Component ที่ส่ง Props currentStep และ onComplete */}
       {siteData && (
         <div className="bg-white font-inter p-4">
           <div className="md:w-3/4 lg:w-1/1 xl:w-1/1 mt-6 md:mt-0 mx-auto">

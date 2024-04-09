@@ -26,7 +26,8 @@ const Navbars_admin = () => {
       if (result.isConfirmed) {
         // User confirmed, log out
         // Remove Token from localStorage (or session storage)
-        localStorage.removeItem("authToken");
+       localStorage.removeItem("token");
+       localStorage.removeItem("id");
 
         // Navigate the user to the login or home page
         navigate("/"); // Update this to your actual URL

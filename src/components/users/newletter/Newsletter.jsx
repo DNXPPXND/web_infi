@@ -13,7 +13,7 @@ const Newsletter = () => {
             พร้อมที่จะเสริมสร้างสกิลและทักษะตามความต้องการของคุณเรียนได้เลยวันนี้!
           </p>
           <div className="mt-4 lg:mt-8 flex justify-center lg:justify-start">
-            <button className="bg-white text-cyan-300 rounded-full font-medium w-[200px] py-3 mx-auto"><a href="#">คอร์สเรียนทั้งหมด</a>
+            <button className="bg-white text-cyan-300 rounded-full font-medium w-[200px] py-3 mx-auto"><a href="/course">คอร์สเรียนทั้งหมด</a>
               
             </button>
           </div>

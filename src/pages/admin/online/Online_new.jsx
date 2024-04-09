@@ -1,10 +1,10 @@
 import React from 'react'
-import Footer from '../../../components/users/footer/Footer';
-import Skill from '../../../components/admin/skill/Skill_view';
-import Nav_admin from '../../../components/admin/navbars/Nav_admin';
 import Navbars_admin from '../../../components/admin/navbars/Navbars_admin';
+import Nav_admin from '../../../components/admin/navbars/Nav_admin';
+import Footer from '../../../components/users/footer/Footer';
+import Online_add from '../../../components/admin/online/Online_add';
 
-const Skill_all = () => {
+const Online_new = () => {
   return (
     <>
       <Navbars_admin />
@@ -12,7 +12,7 @@ const Skill_all = () => {
       <div class="p-4 sm:ml-64">
         <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <div class="grid mb-4">
-            <Skill/>
+            <Online_add />
           </div>
         </div>
       </div>
@@ -21,4 +21,4 @@ const Skill_all = () => {
   );
 }
 
-export default Skill_all
+export default Online_new

@@ -12,7 +12,7 @@ const Agreements = () => {
   const handleAgree = (event) => {
     event.preventDefault();
     if (isChecked) {
-      navigate("/main-profile");
+      navigate("/login");
       // ทำการดำเนินการเมื่อผู้ใช้กด "Agree" และยอมรับข้อตกลง
       Swal.fire({
         title: "สมัครสมาชิกสำเร็จ!",

@@ -109,8 +109,10 @@ export default function Teacher_view() {
                         <TableCell align="center">
                           <Box display="flex" justifyContent="center">
                             <img
-                              src={row.teacher_pic}
-                              style={{ width: "100px", height: "100px" }}
+                              src={
+                                `http://localhost:3333/Images/` + row.teacher_pic
+                              }
+                              style={{ width: "50px", height: "50px" }}
                             />
                           </Box>
                         </TableCell>

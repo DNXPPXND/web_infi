@@ -31,7 +31,7 @@ export default function Rank_view() {
       title: "คุณต้องการจะลบข้อมูลนี้หรือไม่?",
       text: "การกระทำนี้ไม่สามารถยกเลิกได้",
       icon: "warning",
-      showCancelButton: true,
+      showCancelButton: true, 
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
       confirmButtonText: "ลบ",
@@ -110,7 +110,9 @@ export default function Rank_view() {
                         <TableCell align="center">
                           <Box display="flex" justifyContent="center">
                             <img
-                              src={row.rank_pic}
+                              src={
+                                `http://localhost:3333/Images/` + row.rank_pic
+                              }
                               style={{ width: "50px", height: "50px" }}
                             />
                           </Box>

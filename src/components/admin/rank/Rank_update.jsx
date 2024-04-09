@@ -34,7 +34,7 @@ export default function Rank_update() {
       .put(`http://localhost:3333/admin-rank/update/${rank_id}`, data)
       .then((resp) => {
         Swal.fire("แก้ไขข้อมูลสำเร็จ", "", "success").then(() => {
-          navigate("/rank-view");
+          navigate("/admin/rank");
         });
         console.log(resp);
       })

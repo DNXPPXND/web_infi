@@ -40,22 +40,22 @@ function Online_view() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:3333/admin-skill/delete/${onsite_id}`)
+          .delete("http://localhost:3333/admin-onsite/delete/" + onsite_id)
           .then((res) => {
-            Swal.fire("ลบสำเร็จ", "ทักษะได้ถูกลบแล้ว", "success").then(() => {
+            Swal.fire("ลบสำเร็จ", "คอร์สเรียนได้ถูกลบแล้ว", "success").then(() => {
               window.location.reload();
             });
           })
           .catch((err) => {
             console.log(err);
-            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบทักษะได้", "error");
+            Swal.fire("เกิดข้อผิดพลาด", "ไม่สามารถลบคอร์สเรียนได้", "error");
           });
       }
     });
   };
 
   const handleUpdate = (onsite_id) => {
-    window.location = `/admin/update/skill/${onsite_id}`;
+    window.location = `/admin/update/online/${onsite_id}`;
   };
 
   return (
@@ -72,7 +72,7 @@ function Online_view() {
                   </Typography>
                 </Box>
                 <Box>
-                  <Link href="/admin/add-skill">
+                  <Link href="/admin/add/online">
                     <Button variant="contained">เพิ่ม</Button>
                   </Link>
                 </Box>
@@ -104,8 +104,10 @@ function Online_view() {
                         <TableCell align="center">
                           <Box display="flex" justifyContent="center">
                             <img
-                              src={row.onsite_pic}
-                              style={{ width: "100px", height: "100px" }}
+                              src={
+                                `http://localhost:3333/Images/` + row.onsite_pic
+                              }
+                              style={{ width: "150px", height: "150px" }}
                             />
                           </Box>
                         </TableCell>

@@ -87,7 +87,7 @@ function Teacher_update() {
           <div className="grid gap-6 mb-6 md:grid-cols-2">
             <div>
               <label
-                htmlFor="teacher_fname"
+                
                 className="block mb-2 text-sm font-medium text-gray-900 "
               >
                 ชื่อจริง
@@ -104,7 +104,7 @@ function Teacher_update() {
             </div>
             <div>
               <label
-                htmlFor="last_name"
+              
                 className="block mb-2 text-sm font-medium text-gray-900"
               >
                 นามสกุล

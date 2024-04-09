@@ -3,8 +3,6 @@ import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 import logo from '../../../assets/logo.png';
 const Navbar_users = () => {
   const [nav, setNav] = useState(false);
-  
-
   const handleNav = () => {
     setNav(!nav);
   };

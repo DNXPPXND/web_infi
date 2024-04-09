@@ -6,18 +6,20 @@ const app = express();
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var jwt = require("jsonwebtoken");
-const secret = "infi"; 
+const secret = "infi";
 const jsonParser = bodyParser.json();
 const multer = require("multer");
 const path = require("path");
 
-app.use(cors()); 
+app.use(cors());
+app.use(express.json());
+app.use(express.static("Public"));
 
 const connection = mysql.createConnection({
-  host: "localhost",  
-  user: "root",  
-  database: "course-photo",   
-}); 
+  host: "localhost",
+  user: "root",
+  database: "course-photo",
+});
 
 connection.connect((err) => {
   if (err) {
@@ -27,6 +29,21 @@ connection.connect((err) => {
   console.log("เชื่อมต่อกับฐานข้อมูล MySQL สำเร็จ");
 });
 
+//upload
+const storage = (folder) =>
+  multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, `Public/${folder}`);
+    },
+    filename: function (req, file, cb) {
+      cb(null, `${Date.now()}_${file.originalname}`);
+    },
+  });
+
+// สร้าง multer instances สำหรับการอัปโหลดวิดีโอและรูปภาพ
+const upload_vdo = multer({ storage: storage("Videos") });
+const upload_pic = multer({ storage: storage("Images") });
+
 /*********************************************************************************************************************************************************************************************************/
 // สร้าง users ************************************************
 app.post("/admin-users", jsonParser, function (req, res, next) {
@@ -34,13 +51,13 @@ app.post("/admin-users", jsonParser, function (req, res, next) {
     "INSERT INTO users (user_email, user_password, user_fname, user_lname, user_point) VALUES (?, ?, ?, ?, ?)",
     [
       req.body.user_email,
-      req.body.user_password, 
+      req.body.user_password,
       req.body.user_fname,
       req.body.user_lname,
       req.body.user_point,
     ],
     function (err, results, fields) {
-      if (err) { 
+      if (err) {
         res.json({ status: "error", message: err });
         return;
       }
@@ -60,7 +77,26 @@ app.get("/admin-users/view", (req, res) => {
     }
     res.json(results);
   });
-}); // เรียกดู admin  ************************************************
+});
+
+app.get("/admin-users/view/:id", (req, res) => {
+  const id = req.params.id;
+  const query = "SELECT * FROM users WHERE id = ?;";
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).send("User not found");
+      return;
+    }
+    res.json(results[0]); // Assuming user ID is unique, so returning the first result
+  });
+});
+
+// เรียกดู admin  ************************************************
 app.get("/admin-users/view/admin", (req, res) => {
   const query = "SELECT * FROM `users` WHERE status = 1;";
   connection.query(query, (err, results) => {
@@ -72,6 +108,7 @@ app.get("/admin-users/view/admin", (req, res) => {
     res.json(results);
   });
 });
+
 // อัพเดท users  ************************************************
 app.put("/admin-users/update", jsonParser, function (req, res, next) {
   connection.execute(
@@ -112,30 +149,40 @@ app.delete("/admin-users/delete", jsonParser, function (req, res, next) {
 
 /*********************************************************************************************************************************************************************************************************/
 // สร้าง teacher ************************************************
-app.post("/admin-teacher", jsonParser, function (req, res, next) {
-  connection.execute(
-    "INSERT INTO teacher (teacher_fname, teacher_lname, teacher_pic, teacher_description, teacher_company, teacher_position, teacher_email, teacher_mobile, teacher_line) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      req.body.teacher_fname,
-      req.body.teacher_lname,
-      req.body.teacher_pic,
-      req.body.teacher_description,
-      req.body.teacher_company,
-      req.body.teacher_position,
-      req.body.teacher_email,
-      req.body.teacher_mobile,
-      req.body.teacher_line,
-    ],
-    function (err, results, fields) {
-      if (err) {
-        res.json({ status: "error", message: err });
-        return;
-      }
-      //upload()
-       
-      res.json({ status: "ok", data: req.body  });
+app.post("/create/teacher", upload_pic.single("teacher_pic"), (req, res) => {
+  const sql =
+    "INSERT INTO `teacher` (`teacher_fname`, `teacher_lname`, `teacher_pic`, `teacher_description`, `teacher_company`, `teacher_position`, `teacher_email`, `teacher_mobile`, `teacher_line`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+  const values = [
+    req.body.teacher_fname,
+    req.body.teacher_lname,
+    req.file.filename,
+    req.body.teacher_description,
+    req.body.teacher_company,
+    req.body.teacher_position,
+    req.body.teacher_email,
+    req.body.teacher_mobile,
+    req.body.teacher_line,
+  ];
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      return res
+        .status(500)
+        .json({ error: "Error executing query", details: err.message });
     }
-  );
+
+    // Check if any rows were affected by the query (optional, depending on your use case)
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        error: "No rows were inserted",
+        details: "Ensure the provided data is valid.",
+      });
+    }
+
+    return res.json({ status: "Success" });
+  });
 });
 
 //เรียกดู teacher ทั้งหมด  ************************************************
@@ -225,100 +272,55 @@ app.delete(
 /*********************************************************************************************************************************************************************************************************/
 
 /*********************************************************************************************************************************************************************************************************/
-/**add onsite*******************************************************************************************************************************************************************************************************/
-// กำหนดโฟลเดอร์ที่จะเก็บไฟล์ที่อัปโหลด
-// import file
-// Define the disk storage for Multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "Public/Images");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
-  },
-});
-
-// Create the Multer instance
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    const allowedFileTypes = /jpeg|jpg|png/;
-    const extname = allowedFileTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimetype = allowedFileTypes.test(file.mimetype);
-    console.log("upload")
-    if (extname && mimetype) {
-      return cb(null, true);
-    } else {
-      cb("Error: Only .jpeg, .jpg, or .png files are allowed.");
-    }
-  },
-});
-
-//video import
-const video = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "Public/Videos");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
-  },
-});
-
-const videoUpload = multer({
-  storage: video,
-  fileFilter: (req, file, cb) => {
-    const allowedFileTypes = /mp4|avi|mkv/; // เพิ่มนามสกุลไฟล์วิดีโอตามที่ต้องการ
-    const extname = allowedFileTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimetype = allowedFileTypes.test(file.mimetype);
-
-    if (extname && mimetype) {
-      cb(null, true); // แก้ไขจาก cb("Error: ...") เป็น cb(null, true)
-    } else {
-      cb(
-        "Error: Only .mp4, .avi, .mkv, or other allowed video formats are allowed."
-      );
-    }
-  },
-});
-
-// end import file
 
 //สร้าง course_online
-app.post("/admin-onsite/add", jsonParser, function (req, res, next) {
-  connection.execute(
-    "INSERT INTO onsite (onsite_name, onsite_details, category_id, onsite_pic, teacher_id, onsite_time, onsite_location, onsite_video, onsite_status) VALUES (?,?,?,?,?,?,?,?,?)",
-    [
+app.post(
+  "/create/course/online",
+  upload_pic.single("onsite_pic"),
+  (req, res) => {
+    const sql =
+      "INSERT INTO `onsite` (`onsite_name`, `onsite_details`, `category_id`, `onsite_pic`, `teacher_id`, `onsite_video`, `onsite_status`, `lesson_name1`, `lesson_cilp1`, `lesson_name2`, `lesson_cilp2`, `lesson_name3`, `lesson_cilp3`, `lesson_name4`, `lesson_cilp4`, `lesson_name5`, `lesson_cilp5`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    const values = [
       req.body.onsite_name,
       req.body.onsite_details,
       req.body.category_id,
-      req.body.onsite_pic,
+      req.file.filename,
       req.body.teacher_id,
-      req.body.onsite_time,
-      req.body.onsite_location,
       req.body.onsite_video,
-      req.body.onsite_status, 
-    ],
-    function (err, results, fields) {
+      req.body.onsite_status,
+      req.body.lesson_name1,
+      req.body.lesson_cilp1,
+      req.body.lesson_name2,
+      req.body.lesson_cilp2,
+      req.body.lesson_name3,
+      req.body.lesson_cilp3,
+      req.body.lesson_name4,
+      req.body.lesson_cilp4,
+      req.body.lesson_name5,
+      req.body.lesson_cilp5,
+    ];
+
+    connection.query(sql, values, (err, result) => {
       if (err) {
-        res.json({ status: "error", message: err });
-        return;
+        console.error("Error executing query:", err);
+        return res
+          .status(500)
+          .json({ error: "Error executing query", details: err.message });
       }
-      res.json({ status: "ok", data: req.body });
-    }
-  );
-});
+
+      // Check if any rows were affected by the query (optional, depending on your use case)
+      if (result.affectedRows === 0) {
+        return res.status(400).json({
+          error: "No rows were inserted",
+          details: "Ensure the provided data is valid.",
+        });
+      }
+
+      return res.json({ status: "Success" });
+    });
+  }
+);
 
 //เรียกดู course_online   ************************************************
 app.get("/admin-onsite/view", (req, res) => {
@@ -334,7 +336,18 @@ app.get("/admin-onsite/view", (req, res) => {
     res.json(results);
   });
 });
-
+// like course  ************************************************
+// สร้างเส้นทาง API สำหรับรับข้อมูลจาก local storage
+app.get("/api/likedCourses", (req, res) => {
+  try {
+    // ดึงข้อมูลจาก local storage
+    const likedCourses = JSON.parse(localStorage.getItem("likedCourses"));
+    res.json(likedCourses);
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดในการดึงข้อมูล" });
+  }
+});
 //เรียกดู course_online {id}  ************************************************
 app.get("/admin-onsite/view/:onsite_id", (req, res) => {
   const onsite_id = req.params.onsite_id;
@@ -360,25 +373,39 @@ app.get("/admin-onsite/view/:onsite_id", (req, res) => {
   });
 });
 
-// อัพเดท course_line ************************************************
+// อัพเดท course_online ************************************************
 app.put(
   "/admin-onsite/update/:onsite_id",
   jsonParser,
   function (req, res, next) {
+    
+    const params = [
+      req.body.onsite_name,
+      req.body.onsite_details,
+      req.body.category_id,
+      req.body.onsite_pic,
+      req.body.teacher_id,
+      req.body.onsite_video,
+      req.body.onsite_status,
+      req.body.lesson_name1,
+      req.body.lesson_cilp1,
+      req.body.lesson_name2,
+      req.body.lesson_cilp2,
+      req.body.lesson_name3,
+      req.body.lesson_cilp3,
+      req.body.lesson_name4,
+      req.body.lesson_cilp4,
+      req.body.lesson_name5,
+      req.body.lesson_cilp5,
+      req.params.onsite_id,
+    ];
+    const bindParams = params.map((param) =>
+      param !== undefined ? param : null
+    );
+
     connection.execute(
-      "UPDATE onsite SET onsite_name = ?, onsite_details = ?, category_id = ?, onsite_pic = ?, teacher_id = ?, onsite_time = ?, onsite_location = ?, onsite_video = ? WHERE onsite_id = ?",
-      [
-        req.body.onsite_name,
-        req.body.onsite_details,
-        req.body.category_id,
-        req.body.onsite_pic,
-        req.body.teacher_id,
-        req.body.onsite_time,
-        req.body.onsite_location,
-        req.body.onsite_video,
-        req.body.onsite_status,
-        req.params.onsite_id,
-      ],
+      "UPDATE onsite SET onsite_name = ?, onsite_details = ?, category_id = ?, onsite_pic = ?, teacher_id = ?, onsite_video = ?, onsite_status = ?, lesson_name1 = ?, lesson_cilp1 = ?, lesson_name2 = ?, lesson_cilp2 = ?, lesson_name3 = ?, lesson_cilp3 = ?, lesson_name4 = ?, lesson_cilp4 = ?, lesson_name5 = ?, lesson_cilp5 = ? WHERE onsite_id = ?",
+      bindParams,
       function (err, results, fields) {
         if (err) {
           res.json({ status: "error", message: err });
@@ -389,13 +416,14 @@ app.put(
     );
   }
 );
+
 // ลบ course_online ************************************************
 app.delete(
   "/admin-onsite/delete/:onsite_id",
   jsonParser,
   function (req, res, next) {
     connection.execute(
-      "DELETE FROM course_onsite WHERE onsite_id = ?",
+      "DELETE FROM onsite WHERE onsite_id = ?",
       [req.params.onsite_id],
       function (err, results, fields) {
         if (err) {
@@ -408,32 +436,10 @@ app.delete(
   }
 );
 
+
 /*********************************************************************************************************************************************************************************************************/
 //สร้าง course_onsite
-app.post("/admin-site/add", jsonParser, function (req, res, next) {
-  connection.execute(
-    "INSERT INTO onsite_site (site_name, site_details, category_id, site_pic, teacher_id, site_time, site_location, site_video, site_status, site_form) VALUES (?,?,?,?,?,?,?,?,?,?)",
-    [
-      req.body.site_name,
-      req.body.site_details,
-      req.body.category_id,
-      req.body.site_pic,
-      req.body.teacher_id,
-      req.body.site_time,
-      req.body.site_location,
-      req.body.site_video,
-      req.body.site_status,
-      req.body.site_form,
-    ],
-    function (err, results, fields) {
-      if (err) {
-        res.json({ status: "error", message: err });
-        return;
-      }
-      res.json({ status: "ok", data: req.body });
-    }
-  );
-});
+app.post("/create/course/onsite");
 //เรียกดู course_onsite
 app.get("/admin-site/view", (req, res) => {
   const query =
@@ -469,8 +475,8 @@ app.get("/admin-site/view/:site_id", (req, res) => {
 
 // ลบ course_onsite
 
-//recommends course
-app.get("/admin-recommends/view", (req, res) => {
+//PM course
+app.get("/admin-PM/view", (req, res) => {
   const query =
     "SELECT  * FROM onsite INNER JOIN Category ON onsite.category_id = category.category_id WHERE Category.category_id = 6;";
 
@@ -484,37 +490,126 @@ app.get("/admin-recommends/view", (req, res) => {
   });
 });
 
+//DD course
+app.get("/admin-DD/view", (req, res) => {
+  const query =
+    "SELECT  * FROM onsite INNER JOIN Category ON onsite.category_id = category.category_id WHERE Category.category_id = 15;";
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//SA course
+app.get("/admin-SA/view", (req, res) => {
+  const query =
+    "SELECT  * FROM onsite INNER JOIN Category ON onsite.category_id = category.category_id WHERE Category.category_id = 3;";
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//SS course
+app.get("/admin-SS/view", (req, res) => {
+  const query =
+    "SELECT  * FROM onsite INNER JOIN Category ON onsite.category_id = category.category_id WHERE Category.category_id = 2;";
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//TL course
+app.get("/admin-TL/view", (req, res) => {
+  const query =
+    "SELECT  * FROM onsite INNER JOIN Category ON onsite.category_id = category.category_id WHERE Category.category_id = 13;";
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//UU course ต่อ
+app.get("/admin-UU/view", (req, res) => {
+  const query =
+    "SELECT  * FROM onsite INNER JOIN Category ON onsite.category_id = category.category_id WHERE Category.category_id = 11;";
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    res.json(results);
+  });
+});
+
 /*********************************************************************************************************************************************************************************************************/
 // สร้าง rank ************************************************
-app.post("/admin-rank", jsonParser, function (req, res, next) {
-  connection.execute(
-    "SELECT * FROM `rank` WHERE `rank_name` = ? OR `rank_point` = ? OR `rank_pic` = ?",
-    [req.body.rank_name, req.body.rank_point, req.body.rank_pic],
-    function (err, results, fields) {
-      if (err) {
-        res.json({ status: "error", message: err });
-        return;
-      }
+app.post("/create/rank", upload_pic.single("rank_pic"), (req, res) => {
+  const sql =
+    "INSERT INTO `rank` (`category_id`, `rank_name`, `rank_point`, `rank_pic`) VALUES (?, ?, ?, ?)";
 
-      if (results.length > 0) {
-        // ถ้ามีข้อมูลซ้ำ
-        res.json({ status: "error", message: "ข้อมูลซ้ำกัน" });
-      } else {
-        // ถ้าไม่มีข้อมูลซ้ำ ทำการ INSERT
-        connection.execute(
-          "INSERT INTO `rank` (`rank_name`, `rank_point`, `rank_pic`) VALUES (?, ?, ?)",
-          [req.body.rank_name, req.body.rank_point, req.body.rank_pic],
-          function (err, results, fields) {
-            if (err) {
-              res.json({ status: "error", message: err });
-              return;
-            }
-            res.json({ status: "ok", data: req.body });
-          }
-        );
-      }
+  const values = [
+    req.body.category_id,
+    req.body.rank_name,
+    req.body.rank_point,
+    req.file.filename,
+  ];
+
+  connection.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      return res
+        .status(500)
+        .json({ error: "Error executing query", details: err.message });
     }
-  );
+
+    // Check if any rows were affected by the query (optional, depending on your use case)
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        error: "No rows were inserted",
+        details: "Ensure the provided data is valid.",
+      });
+    }
+
+    return res.json({ status: "Success" });
+  });
+});
+
+app.get("/rank/view", (req, res) => {
+  const query =
+    "SELECT * FROM category INNER JOIN rank ON category.category_id = rank.category_id";
+
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error("Error querying database:", err);
+      res.status(500).send("Error fetching data from database");
+      return;
+    }
+    res.json(results);
+  });
 });
 
 // เรียกดู rank ************************************************
@@ -769,6 +864,7 @@ app.post("/register", jsonParser, function (req, res, next) {
       ],
 
       function (err, results, fields) {
+        console.log(results);
         if (err) {
           res.json({ status: "error", message: err });
           return;
@@ -782,28 +878,49 @@ app.post("/register", jsonParser, function (req, res, next) {
 /*********************************************************************************************************************************************************************************************************/
 /***login**************************************************************************************************************************************************************************************************/
 app.post("/login", jsonParser, function (req, res, next) {
+  // ตรวจสอบว่ามีการส่งข้อมูลในรูปแบบที่ถูกต้อง
+  if (!req.body.email || !req.body.password) {
+    return res.json({ status: "error", message: "Invalid email or password" });
+  }
+
   connection.execute(
     "SELECT * FROM users WHERE email=?",
     [req.body.email],
     function (err, users) {
       if (err) {
-        res.json({ status: "error", message: err });
-        return;
+        return res.json({ status: "error", message: err });
       }
       if (users.length == 0) {
-        res.json({ status: "error", message: "No user found" });
-        return;
+        return res.json({ status: "error", message: "No user found" });
       }
+
       bcrypt.compare(
         req.body.password,
         users[0].password,
         function (err, isLogin) {
           if (isLogin) {
-            var userId = users[0].id;
-            var status = users[0].status;
-            var message = status === 1 ? "admin" : "user";
+            const id = users[0].id;
+            const status = users[0].status;
+            const message = status === 1 ? "admin" : "user";
 
-            res.json({ status: "ok", message, id: userId });
+            // สร้าง payload ของ token
+            const payload = {
+              id: id,
+              email: users[0].email,
+              fullname: users[0].fullname,
+              lastname: users[0].lastname,
+              category_id: users[0].category_id,
+            };
+
+            // สร้าง token
+            const token = jwt.sign(payload, secret);
+
+            res.json({
+              status: "ok",
+              id,
+              message,
+              token,
+            });
           } else {
             res.json({ status: "error", message: "Login failed" });
           }
@@ -812,24 +929,13 @@ app.post("/login", jsonParser, function (req, res, next) {
     }
   );
 });
-/*********************************************************************************************************************************************************************************************************/
-/******เช็ค authen***************************************************************************************************************************************************************************************************/
-app.post("/authen", jsonParser, function (req, res, next) {
-  try {
-    const token = req.headers.authorization.split(" ")[1];
-    console.log(decoded);
-    var decoded = jwt.verify(token, secret);
-    res.json({ status: "ok", decoded });
-  } catch (err) {
-    res.json({ status: "error", message: err.message });
-  }
-});
+
 /*********************************************************************************************************************************************************************************************************/
 app.get("/user/:id", (req, res) => {
-  const usersid = req.params.id; // รับค่า teacher_id จาก path
+  const id = req.params.id; // รับค่า teacher_id จาก path
   const query =
     "SELECT * FROM `users` INNER JOIN category ON users.category_id = category.category_id WHERE id = ?; ";
-  connection.query(query, [usersid], (err, results) => {
+  connection.query(query, [id], (err, results) => {
     if (err) {
       console.error("Error querying database:", err);
       res.status(500).send("Error fetching data from database");

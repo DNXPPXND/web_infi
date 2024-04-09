@@ -5,57 +5,61 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Login_all = () => {
-      const navigate = useNavigate();
-      const { id } = useParams();
-      const [data, setData] = useState({
-        email: "",
-        password: "",
-      });
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
 
-      const [loginStatus, setLoginStatus] = useState(null);
+  const [loginStatus, setLoginStatus] = useState(null);
 
-      const handleChange = (e) => {
-        const value = e.target.value;
-        setData({
-          ...data,
-          [e.target.name]: value,
-        });
-      };
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setData({
+      ...data,
+      [e.target.name]: value,
+    });
+  };
 
-      const handleSubmit = (event) => {
-        event.preventDefault();
-        const urlapi = "http://localhost:3333/login";
-        const param = {
-          email: data.email,
-          password: data.password,
-        };
-        axios
-          .post(urlapi, param)
-          .then((resp) => {
-            if (resp.data.status === "ok") {
-              if (resp.data.message === "admin") {
-                navigate("/admin");
-              } else {
-                
-                navigate(`/users-profile/${resp.data.id}`); 
-              }
-              setLoginStatus("success");
+ const handleSubmit = (event) => {
+   event.preventDefault();
+   const urlapi = "http://localhost:3333/login";
+   const param = {
+     email: data.email,
+     password: data.password,
+   };
+   axios
+     .post(urlapi, param)
+     .then((resp) => {
+      console.log(resp);
+       if (resp.data.status === "ok") {
+        localStorage.setItem("id", resp.data.id);
+         if (resp.data.message === "admin") {
+          localStorage.setItem("token", resp.data.token);
+           navigate("/admin");
+         } else {
+           // รีเซ็ต token ใน Local Storage
+           localStorage.setItem("token", resp.data.token);
+           navigate(`/profile/${resp.data.id}`);
+         }
+         setLoginStatus("success");
 
-              Swal.fire({
-                title: "เข้าสู่ระบบสำเร็จ!",
-                text: "คุณได้เข้าสู่ระบบเรียบร้อยแล้ว",
-                icon: "success",
-              });
-            } else {
-              setLoginStatus("error");
-            }
-            console.log(resp);
-          })
-          .catch((e) => {
-            console.log(e);
-            setLoginStatus("error");
-          });
-      };
+         Swal.fire({
+           title: "เข้าสู่ระบบสำเร็จ!",
+           text: "คุณได้เข้าสู่ระบบเรียบร้อยแล้ว",
+           icon: "success",
+         });
+       } else {
+         setLoginStatus("error");
+       }
+       console.log(resp);
+     })
+     .catch((e) => {
+       console.log(e);
+       setLoginStatus("error");
+     });
+ };
 
   return (
     <div>
@@ -126,6 +130,6 @@ const Login_all = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Login_all
+export default Login_all;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar_users from "../../../components/users/navbars/Navbar_users";
+import Navbar_profile from "../../../components/users/navbars/Navbar_profile";
 import Footer from "../../../components/users/footer/Footer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
@@ -45,7 +45,7 @@ const Online_User = () => {
 
   return (
     <>
-      <Navbars_admin />
+      <Navbar_profile />
       <Nav_admin/>
       <div class="p-4 sm:ml-64">
         <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">

@@ -83,6 +83,7 @@ function Category_view() {
                     <TableRow>
                       <TableCell>ลำดับ</TableCell>
                       <TableCell align="center">ประเภท</TableCell>
+                      <TableCell align="center">ไอดี</TableCell>
                       <TableCell align="center">ตัวเลือก</TableCell>
                     </TableRow>
                   </TableHead>
@@ -100,6 +101,7 @@ function Category_view() {
                           {index + 1}
                         </TableCell>
                         <TableCell align="left">{row.category_name}</TableCell>
+                        <TableCell align="left">{row.category_id}</TableCell>
 
                         <TableCell align="center">
                           <ButtonGroup

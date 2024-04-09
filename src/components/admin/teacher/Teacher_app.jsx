@@ -8,7 +8,7 @@ function Teacher_add() {
   const [formData, setFormData] = useState({
     teacher_fname: "",
     teacher_lname: "",
-    teacher_pic: "",
+    teacher_pic: null,
     teacher_description: "",
     teacher_company: "",
     teacher_position: "",
@@ -17,10 +17,8 @@ function Teacher_add() {
     teacher_line: "",
   });
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-    console.log(newValue);
-
+    const { name, value, files } = e.target;
+    const newValue = files ? files[0] : value;
     setFormData({
       ...formData,
       [name]: newValue,
@@ -28,41 +26,44 @@ function Teacher_add() {
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    const urlapi = "http://localhost:3333/admin-teacher";
-    const param = {
-      teacher_fname: formData.teacher_fname,
-      teacher_lname: formData.teacher_lname,
-      teacher_pic: formData.teacher_pic,
-      teacher_description: formData.teacher_description,
-      teacher_company: formData.teacher_company,
-      teacher_position: formData.teacher_position,
-      teacher_email: formData.teacher_email,
-      teacher_mobile: formData.teacher_mobile,
-      teacher_line: formData.teacher_line,
-    };
+    const urlapi = "http://localhost:3333/create/teacher";
+    const formDataToSend = new FormData();
+    console.log(formData);
+    formDataToSend.append("teacher_fname", formData.teacher_fname);
+    formDataToSend.append("teacher_lname", formData.teacher_lname);
+    formDataToSend.append("teacher_pic", formData.teacher_pic);
+    formDataToSend.append("teacher_description", formData.teacher_description);
+    formDataToSend.append("teacher_company", formData.teacher_company);
+    formDataToSend.append("teacher_position", formData.teacher_position);
+    formDataToSend.append("teacher_email", formData.teacher_email);
+    formDataToSend.append("teacher_mobile", formData.teacher_mobile);
+    formDataToSend.append("teacher_line", formData.teacher_line);
+
     axios
-      .post(urlapi, param)
+      .post(urlapi, formDataToSend)
       .then((resp) => {
-        navigate("/view");
         console.log(resp);
-        Swal.fire({
-          title: "เพื่มข้อมูลสำเร็จ",
-          icon: "success",
-        });
+        if (
+          resp.data.status === "error" &&
+          resp.data.message === "ข้อมูลซ้ำกัน"
+        ) {
+          Swal.fire("ข้อมูลซ้ำกัน", "กรุณาตรวจสอบและลองใหม่อีกครั้ง", "error");
+        } else {
+          Swal.fire("เพิ่มข้อมูลสำเร็จ", "", "success").then(() => {
+            navigate("/admin");
+          });
+        }
+        console.log(resp);
       })
       .catch((e) => {
         console.log(e);
-        Swal.fire({
-          title: "เกิดข้อผิดพลาดในการบันทึกข้อมูล",
-          icon: "error",
-        });
+        Swal.fire("เกิดข้อผิดพลาดในการเพิ่มข้อมูล", "", "error");
       });
   };
 
   return (
     <>
       <div>
-        {" "}
         <div className="text-center">
           <div className="mx-auto max-w-[600px] text-2xl font-inter">
             เพิ่มข้อมูลอาจารย์ผู้สอน
@@ -71,10 +72,7 @@ function Teacher_add() {
         <form onSubmit={handleSubmit}>
           <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
-              <label
-                for="teacher_fname"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">
                 ชิ่อ
               </label>
               <input
@@ -89,10 +87,7 @@ function Teacher_add() {
               />
             </div>
             <div>
-              <label
-                for="last_name"
-                class="block mb-2 text-sm font-medium text-gray-900"
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900">
                 นามสกุล
               </label>
               <input
@@ -108,18 +103,15 @@ function Teacher_add() {
             </div>
           </div>
           <div>
-            <label
-              className="block mb-2 text-sm font-medium text-gray-900"
-              htmlFor="teacher_pic"
-            >
+            <label className="block mb-2 text-sm font-medium text-gray-900">
               Upload file
             </label>
             <input
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               aria-describedby="user_avatar_help"
+              type="file"
               id="teacher_pic"
               name="teacher_pic"
-              type="file"
               onChange={handleChange}
             />
             <div
@@ -131,10 +123,7 @@ function Teacher_add() {
           </div>
 
           <div>
-            <label
-              for="message"
-              class="block mb-2 text-sm font-medium text-gray-900 "
-            >
+            <label class="block mb-2 text-sm font-medium text-gray-900 ">
               คำอธิบาย
             </label>
             <textarea
@@ -149,10 +138,7 @@ function Teacher_add() {
           </div>
           <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
-              <label
-                for="teacher_fname"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">
                 บริษัท
               </label>
               <input
@@ -167,10 +153,7 @@ function Teacher_add() {
               />
             </div>
             <div>
-              <label
-                for="last_name"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">
                 ตำแหน่ง
               </label>
               <input
@@ -187,10 +170,7 @@ function Teacher_add() {
           </div>
           <div>
             <div class="mb-6">
-              <label
-                for="email"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">
                 อีเมล
               </label>
               <input
@@ -205,10 +185,7 @@ function Teacher_add() {
               />
             </div>
             <div>
-              <label
-                for="phone"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">
                 เบอร์โทร
               </label>
               <input
@@ -223,10 +200,7 @@ function Teacher_add() {
               />
             </div>
             <div>
-              <label
-                for="teacher_fname"
-                class="block mb-2 text-sm font-medium text-gray-900 "
-              >
+              <label class="block mb-2 text-sm font-medium text-gray-900 ">
                 ไอดีไลน์
               </label>
               <input

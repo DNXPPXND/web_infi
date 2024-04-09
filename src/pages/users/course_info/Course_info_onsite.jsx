@@ -7,6 +7,7 @@ import Container from "@mui/material/Container";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Course_info_site from "../../../components/users/course_info/Course_info_site";
+import Navbar_profile from "../../../components/users/navbars/Navbar_profile";
 
 const CustomTabPanel = ({ value, index, children }) => {
   // Implement your CustomTabPanel component logic here
@@ -40,7 +41,7 @@ const Course_info_onsite = () => {
 
   return (
     <>
-      <Navbar_users />
+      <Navbar_profile />
       <div>
         <React.Fragment>
           <CssBaseline />
